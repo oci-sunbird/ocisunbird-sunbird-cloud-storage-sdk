@@ -27,6 +27,14 @@ object AppConf {
         getConfig("aws_storage_secret");
     }
 
+    def getOciKey(): String = {
+        getConfig("oci_storage_key");
+    }
+
+    def getOciSecret(): String = {
+        getConfig("oci_storage_secret");
+    }
+
     def getStorageType(): String = {
         getConfig("cloud_storage_type");
     }
@@ -36,6 +44,7 @@ object AppConf {
         else if (`type`.equals("azure")) getConfig("azure_storage_key");
         else if (`type`.equals("cephs3")) getConfig("cephs3_storage_key");
         else if (`type`.equals("gcloud")) getConfig("gcloud_client_key");
+        else if (`type`.equals("oci")) getConfig("oci_storage_key");
         else "";
     }
 
@@ -44,6 +53,7 @@ object AppConf {
         else if (`type`.equals("azure")) getConfig("azure_storage_secret");
         else if (`type`.equals("cephs3")) getConfig("cephs3_storage_secret");
         else if (`type`.equals("gcloud")) getConfig("gcloud_private_secret");
+        else if (`type`.equals("oci")) getConfig("oci_storage_secret");
         else "";
     }
 }
