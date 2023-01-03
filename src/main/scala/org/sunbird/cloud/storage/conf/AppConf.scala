@@ -35,6 +35,10 @@ object AppConf {
         getConfig("oci_storage_secret");
     }
 
+    // def getOciEnpoint(): Option[String] = {
+    //     getConfig("oci_storage_endpoint");
+    // }
+
     def getStorageType(): String = {
         getConfig("cloud_storage_type");
     }
@@ -56,4 +60,10 @@ object AppConf {
         else if (`type`.equals("oci")) getConfig("oci_storage_secret");
         else "";
     }
+
+    // def getStorageEndpoint(`type`: String): String = {
+    //     if (`type`.equals("oci")) getConfig("oci_storage_endpoint");
+    //     else "";
+    // }
+
 }
