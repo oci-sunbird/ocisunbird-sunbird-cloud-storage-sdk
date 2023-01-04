@@ -67,10 +67,7 @@ trait BaseStorageService extends IStorageService {
                     val message = s"Failed to upload. file: $file, key: $objectKey, attempt: $attempt, maxAttempts: $retryCount. Exceeded maximum number of retries"
                     throw new StorageServiceException(message)
                 }
-                println(blobStore.getClass)
-                println("***About to check containerExists**")
-                blobStore.containerExists(container)
-                println("***About to check createContainerInLocation**")
+
                 blobStore.createContainerInLocation(null, container)
                 val fileObj = new File(file)
                 val payload = Files.asByteSource(fileObj)
