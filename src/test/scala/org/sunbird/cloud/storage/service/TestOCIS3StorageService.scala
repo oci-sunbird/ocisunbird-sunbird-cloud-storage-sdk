@@ -10,14 +10,14 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
 
     it should "test for oci s3 storage" in {
 
-        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"),AppConf.getStorageEndpoint("oci")))
+        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"),AppConf.getStorageEndpoint("oci"),AppConf.getRegion("oci")))
         val storageContainer = AppConf.getConfig("oci_storage_container")
 
 
         val caught =
             // intercept[StorageServiceException]{
             intercept[Exception]{
-                s3Service.upload(storageContainer, "src/test/resources/test-data.log", "testUpload/1234/", Option(false),Option(1), Option(2), None)
+                s3Service.upload(storageContainer, "src/test/resources/test-data.log", "testUpload/test-data.log", Option(false),Option(1), Option(2), None)
             }
         assert(caught.getMessage.contains("Failed to upload."))
         s3Service.closeContext()
