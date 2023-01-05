@@ -1,23 +1,27 @@
 package org.sunbird.cloud.storage.service
 
-import org.jclouds.blobstore._
+//import org.jclouds.blobstore._
 import com.google.common.io._
+
 import java.io._
 import com.google.common.collect._
+import com.google.common.hash
 
-import org.apache.commons.io.FilenameUtils
-import org.apache.tika.Tika
+import scala.util.hashing
+
+//import org.apache.commons.io.FilenameUtils
+//import org.apache.tika.Tika
 import org.sunbird.cloud.storage.exception.StorageServiceException
-import org.sunbird.cloud.storage.util.{CommonUtil, JSONUtils}
-
-import collection.JavaConverters._
-import org.jclouds.blobstore.options.ListContainerOptions.Builder.{afterMarker, prefix, recursive}
+//import org.sunbird.cloud.storage.util.{CommonUtil, JSONUtils}
+//
+//import collection.JavaConverters._
+//import org.jclouds.blobstore.options.ListContainerOptions.Builder.{afterMarker, prefix, recursive}
 import org.sunbird.cloud.storage.Model.Blob
 import org.jclouds.blobstore.options.{CopyOptions, PutOptions}
-import org.sunbird.cloud.storage.conf.AppConf
+//import org.sunbird.cloud.storage.conf.AppConf
 
-import scala.collection.mutable.ListBuffer
-import scala.concurrent.{ExecutionContext, Future}
+//import scala.collection.mutable.ListBuffer
+//import scala.concurrent.{ExecutionContext, Future}
 
 import com.google.inject.Module
 import org.jclouds.ContextBuilder
@@ -29,7 +33,7 @@ import org.sunbird.cloud.storage.factory.StorageConfig
 
 // Below can be removed once ready for production
 import org.jclouds.logging.slf4j.config.SLF4JLoggingModule
-import org.jclouds.logging.slf4j.SLF4JLogger
+//import org.jclouds.logging.slf4j.SLF4JLogger
 //////////////////////////////////////////////////
 
 import java.util.Properties
@@ -51,9 +55,14 @@ class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
 
     override def getPaths(container: String, objects: List[Blob]): List[String] = {
         objects.map{f => "s3n://" + container + "/" + f.key}
-    } 
+    }
 
-    override def upload(container: String, file: String, objectKey: String, isDirectory: Option[Boolean] = Option(false), attempt: Option[Int] = Option(1), retryCount: Option[Int] = None, ttl: Option[Int] = None): String = {
+
+
+
+
+
+  override def upload(container: String, file: String, objectKey: String, isDirectory: Option[Boolean] = Option(false), attempt: Option[Int] = Option(1), retryCount: Option[Int] = None, ttl: Option[Int] = None): String = {
         try {
             if(isDirectory.get) {
                 val d = new File(file)
@@ -70,21 +79,17 @@ class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
                     throw new StorageServiceException(message)
                 }
 
-                 blobStore.createContainerInLocation(null, container)
-                val fileObj = new File(file)
-                val payload = Files.asByteSource(fileObj)
-                val payload_size = payload.size()
-                val  contentType = tika.detect(fileObj)
-                println("*** About to BuildBlob****")
-                println(blobStore.getClass)
-//                var temp = blobStore.blobBuilder(objectKey).payload(payload).contentType(contentType).contentType("UTF-8").contentLength(payload_size)
-//                println(temp.getClass)
-//                val blob = blobStore.blobBuilder(objectKey).payload(payload).contentType(contentType).contentType("UTF-8").contentLength(payload.size()).build()
-//                println(blobStore.blobBuilder(objectKey).payload(payload).contentType(contentType).getClass)
+
+                 if (!( blobStore.containerExists(container) )) {
+                    blobStore.createContainerInLocation(null, container)
+                 }
+                  val fileObj = new File(file)
+                  val payload = Files.asByteSource(fileObj)
+                  val payload_size  = payload.size()
+                  val payload_md5 = payload.hash(hash.Hashing.md5())
+                  val  contentType = tika.detect(fileObj)
+
                  val blob = blobStore.blobBuilder(objectKey).payload(payload).contentType(contentType).contentEncoding("UTF-8").contentLength(payload_size).build()
-//                val blob = blobStore.blobBuilder(objectKey).payload(payload).contentType(contentType).contentEncoding("UTF-8").build()
-                println(blobStore.blobBuilder(objectKey).payload(payload).contentType(contentType).contentEncoding("UTF-8").getClass)
-                println("*** About to putBlob****")
                 blobStore.putBlob(container, blob, new PutOptions().multipart())
 //                 blobStore.putBlob(container, blob)
                 if (ttl.isDefined) {
