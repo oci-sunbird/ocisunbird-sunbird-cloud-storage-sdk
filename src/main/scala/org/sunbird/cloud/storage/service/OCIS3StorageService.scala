@@ -97,6 +97,34 @@ class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
         }
     }
 
+    override def put(container: String, content: Array[Byte], objectKey: String, isPublic: Option[Boolean] = Option(false), isDirectory: Option[Boolean] = Option(false), ttl: Option[Int] = None, retryCount: Option[Int] = None): String = {
+
+        try {
+
+            if (attempt == retryCount.getOrElse(maxRetries)) {
+                val message = s"Failed to upload. key: $objectKey, attempt: $attempt, maxAttempts: $retryCount. Exceeded maximum number of retries"
+                throw new StorageServiceException(message)
+            }
+
+            if (!( blobStore.containerExists(container) )) {
+                blobStore.createContainerInLocation(null, container)
+            }
+            val blob = blobStore.blobBuilder(objectKey).payload(content).contentLength(content.length).build()
+            blobStore.putBlob(container, blob)
+            if(isPublic.get) {
+                getSignedURL(container, objectKey, Option(ttl.getOrElse(maxSignedurlTTL)))
+            }
+            else blobStore.getBlob(container, objectKey).getMetadata.getUri.toString
+        }
+        catch {
+            case e: Exception => {
+                Thread.sleep(attempt*2000)
+                attempt += 1
+                put(container, content, objectKey, isPublic, isDirectory, ttl, retryCount)
+            }
+        }
+    }
+    
 
 
 }
