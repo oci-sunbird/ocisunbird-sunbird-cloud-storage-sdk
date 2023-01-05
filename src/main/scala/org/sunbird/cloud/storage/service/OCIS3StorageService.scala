@@ -1,42 +1,31 @@
 package org.sunbird.cloud.storage.service
 
-//import org.jclouds.blobstore._
-import com.google.common.io._
-
-import java.io._
 import com.google.common.collect._
+import com.google.common.io._
 import com.google.common.hash
-
-import scala.util.hashing
-
-//import org.apache.commons.io.FilenameUtils
-//import org.apache.tika.Tika
-import org.sunbird.cloud.storage.exception.StorageServiceException
-//import org.sunbird.cloud.storage.util.{CommonUtil, JSONUtils}
-//
-//import collection.JavaConverters._
-//import org.jclouds.blobstore.options.ListContainerOptions.Builder.{afterMarker, prefix, recursive}
-import org.sunbird.cloud.storage.Model.Blob
-import org.jclouds.blobstore.options.{CopyOptions, PutOptions}
-//import org.sunbird.cloud.storage.conf.AppConf
-
-//import scala.collection.mutable.ListBuffer
-//import scala.concurrent.{ExecutionContext, Future}
-
 import com.google.inject.Module
 import org.jclouds.ContextBuilder
 import org.jclouds.blobstore.BlobStoreContext
-import org.sunbird.cloud.storage.BaseStorageService
-import org.sunbird.cloud.storage.factory.StorageConfig
-
-
-
-// Below can be removed once ready for production
+import org.jclouds.blobstore._
+import org.jclouds.blobstore.options.CopyOptions
+import org.jclouds.blobstore.options.ListContainerOptions.Builder.afterMarker
+import org.jclouds.blobstore.options.ListContainerOptions.Builder.prefix
+import org.jclouds.blobstore.options.ListContainerOptions.Builder.recursive
+import org.jclouds.blobstore.options.PutOptions
 import org.jclouds.logging.slf4j.config.SLF4JLoggingModule
-//import org.jclouds.logging.slf4j.SLF4JLogger
-//////////////////////////////////////////////////
+import org.sunbird.cloud.storage.BaseStorageService
+import org.sunbird.cloud.storage.Model.Blob
+import org.sunbird.cloud.storage.exception.StorageServiceException
+import org.sunbird.cloud.storage.factory.StorageConfig
+import org.sunbird.cloud.storage.util.CommonUtil
+import org.sunbird.cloud.storage.util.JSONUtils
 
+import java.io._
 import java.util.Properties
+import scala.collection.mutable.ListBuffer
+import scala.util.hashing
+
+import collection.JavaConverters._
 
 class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
 
@@ -56,10 +45,6 @@ class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
     override def getPaths(container: String, objects: List[Blob]): List[String] = {
         objects.map{f => "s3n://" + container + "/" + f.key}
     }
-
-
-
-
 
 
   override def upload(container: String, file: String, objectKey: String, isDirectory: Option[Boolean] = Option(false), attempt: Option[Int] = Option(1), retryCount: Option[Int] = None, ttl: Option[Int] = None): String = {
@@ -89,9 +74,9 @@ class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
                   val payload_md5 = payload.hash(hash.Hashing.md5())
                   val  contentType = tika.detect(fileObj)
 
-                 val blob = blobStore.blobBuilder(objectKey).payload(payload).contentType(contentType).contentEncoding("UTF-8").contentLength(payload_size).build()
-                blobStore.putBlob(container, blob, new PutOptions().multipart())
-//                 blobStore.putBlob(container, blob)
+                 val blob = blobStore.blobBuilder(objectKey).payload(payload).contentType(contentType).contentEncoding("UTF-8").contentLength(payload_size).contentMD5(payload_md5).build()
+                // blobStore.putBlob(container, blob, new PutOptions().multipart())
+                blobStore.putBlob(container, blob)
                 if (ttl.isDefined) {
                     getSignedURL(container, objectKey, Option(ttl.get))
                 } else
