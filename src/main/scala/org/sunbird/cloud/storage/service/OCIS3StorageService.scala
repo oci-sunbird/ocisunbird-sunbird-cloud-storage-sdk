@@ -3,7 +3,6 @@ package org.sunbird.cloud.storage.service
 import com.google.common.collect._
 import com.google.common.io._
 import com.google.common.hash
-import com.google.inject.Module
 import org.jclouds.ContextBuilder
 import org.jclouds.blobstore.BlobStoreContext
 import org.jclouds.blobstore._

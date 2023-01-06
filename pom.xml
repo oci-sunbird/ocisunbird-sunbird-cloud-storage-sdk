@@ -109,6 +109,11 @@
 			<artifactId>tika-core</artifactId>
 			<version>1.18</version>
 		</dependency>
+  <dependency>
+    <groupId>org.apache.jclouds.driver</groupId>
+    <artifactId>jclouds-slf4j</artifactId>
+    <version>2.5.0</version>
+  </dependency>
 	</dependencies>
     <build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
