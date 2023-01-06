@@ -12,7 +12,6 @@ import org.jclouds.blobstore.options.ListContainerOptions.Builder.afterMarker
 import org.jclouds.blobstore.options.ListContainerOptions.Builder.prefix
 import org.jclouds.blobstore.options.ListContainerOptions.Builder.recursive
 import org.jclouds.blobstore.options.PutOptions
-import org.jclouds.logging.slf4j.config.SLF4JLoggingModule
 import org.sunbird.cloud.storage.BaseStorageService
 import org.sunbird.cloud.storage.Model.Blob
 import org.sunbird.cloud.storage.exception.StorageServiceException
@@ -30,7 +29,6 @@ import collection.JavaConverters._
 class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
 
     val overrides = new Properties()
-    val modules = ImmutableSet.of(new SLF4JLoggingModule().asInstanceOf[Module])
 
     overrides.setProperty("jclouds.provider", "s3")
     overrides.setProperty("jclouds.endpoint", config.endPoint.get)
@@ -39,7 +37,8 @@ class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
     overrides.setProperty("jclouds.regions", config.region)
     overrides.setProperty("jclouds.s3.signer-version", "4")
 
-    var context = ContextBuilder.newBuilder("s3").endpoint(config.endPoint.get).overrides(overrides).modules(modules).credentials(config.storageKey, config.storageSecret).buildView(classOf[BlobStoreContext])
+    var context = ContextBuilder.newBuilder("s3").endpoint(config.endPoint.get).overrides(overrides).credentials(config.storageKey, config.storageSecret).buildView(classOf[BlobStoreContext])
+
     var blobStore = context.getBlobStore
 
     override def getPaths(container: String, objects: List[Blob]): List[String] = {

@@ -114,12 +114,7 @@
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
 			<version>1.18</version>
-		</dependency>
-  <dependency>
-    <groupId>ch.qos.logback</groupId>
-    <artifactId>logback-classic</artifactId>
-    <version>1.0.13</version>
-  </dependency>	
+		</dependency>	
 <dependency>
     <groupId>org.apache.jclouds.driver</groupId>
     <artifactId>jclouds-slf4j</artifactId>
