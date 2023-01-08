@@ -3,7 +3,13 @@
 .project
 .settings
 .idea/
+.vscode/
 src/test/resources/test*
 .cache*
 .DS_Store
 *.iml
+.metals/
+.bloop/
+.ammonite/
+metals.sbt
+.scalafmt.conf
