@@ -71,7 +71,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        val list_objs_keys = s3Service.searchObjectkeys(storageContainer, "testUpload/")
        assert(list_objs_keys.isInstanceOf[List[String]] || list_objs_keys.isEmpty)
        s3Service.closeContext()
-   }   
+   }
 
    it should "Test for oci s3 storage - Get HDFS compatible file paths to be used in tech stack like Spark" in {
 
@@ -81,7 +81,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        val hdfs_paths = s3Service.getPaths(storageContainer, list_objs)
        assert(hdfs_paths.isInstanceOf[List[String]] || hdfs_paths.isEmpty)
        s3Service.closeContext()
-   }  
+   }
 
    it should "Test for oci s3 storage - Get the blob object data" in {
 
@@ -90,7 +90,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        val obj_data = s3Service.getObjectData(storageContainer, "testUpload/1.log")
        assert(obj_data.isInstanceOf[Array[String]] || obj_data.isEmpty)
        s3Service.closeContext()
-   }  
+   }
 
    it should "Test for oci s3 storage - Get the URI of the given prefix" in {
 
@@ -99,7 +99,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        val obj_uri = s3Service.getUri(storageContainer, "testUpload/")
        assert(obj_uri.isInstanceOf[String])
        s3Service.closeContext()
-   } 
+   }
 
 
    it should "Test for oci s3 storage - Put a blob in the cloud with the given content data" in {
@@ -110,7 +110,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        val obj_put_str = s3Service.put(storageContainer, content_array,"testUpload/2.log")
        assert(obj_put_str.isInstanceOf[String])
        s3Service.closeContext()
-   } 
+   }
 
    it should "Test for oci s3 storage - Get pre-signed URL to access an object in the cloud store." in {
 

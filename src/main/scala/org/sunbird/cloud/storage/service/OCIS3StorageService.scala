@@ -36,6 +36,7 @@ class OCIS3StorageService(config: StorageConfig) extends BaseStorageService {
     overrides.setProperty("jclouds.endpoint", config.endPoint.get)
     overrides.setProperty("jclouds.s3.virtual-host-buckets", "false")
     overrides.setProperty("jclouds.strip-expect-header", "true")
+    overrides.setProperty("jclouds.region", config.region)
     overrides.setProperty("jclouds.regions", config.region)
     overrides.setProperty("jclouds.s3.signer-version", "4")
 
