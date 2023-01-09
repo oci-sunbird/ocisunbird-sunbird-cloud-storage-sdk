@@ -89,6 +89,13 @@
 			<artifactId>hadoop-aws</artifactId>
 			<version>3.3.4</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-common</artifactId>
+			<version>3.3.4</version>
+		</dependency>
+
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
@@ -229,4 +236,3 @@
 		</plugins>
 	</build>
 </project>
-
