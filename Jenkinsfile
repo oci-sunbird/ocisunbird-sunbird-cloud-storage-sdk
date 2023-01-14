@@ -27,7 +27,7 @@ node('build-slave') {
                     sh '/opt/apache-maven-3.6.3/bin/mvn3.6 -v'
                     sh 'echo OCI Storage Endpoint $oci_storage_endpoint'
                     sh 'set'
-//                    sh '/opt/apache-maven-3.6.3/bin/mvn3.6 clean install -DskipTests'
+                    sh '/opt/apache-maven-3.6.3/bin/mvn3.6 clean package'
                   
                 }
 
