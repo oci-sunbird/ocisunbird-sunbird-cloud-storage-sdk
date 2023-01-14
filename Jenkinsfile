@@ -34,7 +34,7 @@ node('build-slave') {
 //                stage('ArchiveArtifacts') {
 //                    archiveArtifacts "metadata.json"
 //                    currentBuild.description = "${build_tag}"
-                }
+//                }
             }
         }
     }
