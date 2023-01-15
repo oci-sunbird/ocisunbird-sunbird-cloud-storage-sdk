@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.sunbird</groupId>
     <artifactId>cloud-store-sdk_2.12</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
     <packaging>jar</packaging>
     <name>Cloud Store SDK</name>
     <description>cloud-store-sdk provides client APIs to handle cloud store (AWS S3, Azure Blobstore).</description>
@@ -51,11 +51,11 @@
 			<version>${scala.version}</version>
 			<scope>provided</scope>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.google.guava</groupId>-->
-<!--			<artifactId>guava</artifactId>-->
-<!--			<version>19.0</version>-->
-<!--		</dependency>-->
+		<!-- <dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency> -->
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -121,11 +121,11 @@
     <version>2.2.1</version>
   </dependency>
 
-  <dependency>
+  <!-- <dependency>
     <groupId>org.apache.flink</groupId>
     <artifactId>flink-s3-fs-presto</artifactId>
     <version>1.13.5</version>
-</dependency>
+</dependency> -->
 
 	</dependencies>
     <build>
