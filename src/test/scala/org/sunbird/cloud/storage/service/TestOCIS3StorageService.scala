@@ -8,8 +8,8 @@ import org.sunbird.cloud.storage.factory.{StorageConfig, StorageServiceFactory}
 import org.sunbird.cloud.storage.exception.StorageServiceException
 import java.nio.file.{Files, Paths}
 class TestOCIS3StorageService extends FlatSpec with Matchers {
-
-    it should "Test for oci s3 storage - Upload a folder to cloud" in {
+object oci extends Tag("oci")
+    it should "Test for oci s3 storage - Upload a folder to cloud"  taggedAs(oci) in {
 
         val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"),AppConf.getStorageEndpoint("oci"),AppConf.getRegion("oci")))
         val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -18,7 +18,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
         s3Service.closeContext()
     }
 
-    it should "Test for oci s3 storage - Upload a file to cloud" in {
+    it should "Test for oci s3 storage - Upload a file to cloud"  taggedAs(oci) in {
 
         val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"),AppConf.getStorageEndpoint("oci"),AppConf.getRegion("oci")))
         val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -27,7 +27,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
         s3Service.closeContext()
     }
 
-   it should "Test for oci s3 storage - List objects from cloud storage for a given prefix" in {
+   it should "Test for oci s3 storage - List objects from cloud storage for a given prefix" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -36,7 +36,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }
 
-   it should "Test for oci s3 storage - List object keys from cloud storage for a given prefix" in {
+   it should "Test for oci s3 storage - List object keys from cloud storage for a given prefix" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -46,7 +46,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
    }
 
 
-   it should "Test for oci s3 storage - Get the blob object details" in {
+   it should "Test for oci s3 storage - Get the blob object details" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -55,7 +55,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }
 
-   it should "Test for oci s3 storage - Search for objects for a given prefix" in {
+   it should "Test for oci s3 storage - Search for objects for a given prefix" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -64,7 +64,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }
 
-   it should "Test for oci s3 storage - Search for objects keys for a given prefix and return only keys" in {
+   it should "Test for oci s3 storage - Search for objects keys for a given prefix and return only keys" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -73,7 +73,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }   
 
-   it should "Test for oci s3 storage - Get HDFS compatible file paths to be used in tech stack like Spark" in {
+   it should "Test for oci s3 storage - Get HDFS compatible file paths to be used in tech stack like Spark" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -83,7 +83,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }  
 
-   it should "Test for oci s3 storage - Get the blob object data" in {
+   it should "Test for oci s3 storage - Get the blob object data" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -92,7 +92,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }  
 
-   it should "Test for oci s3 storage - Get the URI of the given prefix" in {
+   it should "Test for oci s3 storage - Get the URI of the given prefix" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -102,7 +102,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
    } 
 
 
-   it should "Test for oci s3 storage - Put a blob in the cloud with the given content data" in {
+   it should "Test for oci s3 storage - Put a blob in the cloud with the given content data" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -112,7 +112,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    } 
 
-   it should "Test for oci s3 storage - Get pre-signed URL to access an object in the cloud store." in {
+   it should "Test for oci s3 storage - Get pre-signed URL to access an object in the cloud store." taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -121,7 +121,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }
 
-   it should "Test for oci s3 storage - Get pre-signed URL V2 to access an object in the cloud store" in {
+   it should "Test for oci s3 storage - Get pre-signed URL V2 to access an object in the cloud store" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -130,7 +130,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }
 
-   it should "Test for oci s3 storage - Download file/folder from cloud storage" in {
+   it should "Test for oci s3 storage - Download file/folder from cloud storage" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -139,7 +139,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }
 
-   it should "Test for oci s3 storage - Delete an object from the cloud store" in {
+   it should "Test for oci s3 storage - Delete an object from the cloud store" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
@@ -147,7 +147,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }
 
-   it should "Test for oci s3 storage - Copy objects from one container to another container or between different folders within the same container" in {
+   it should "Test for oci s3 storage - Copy objects from one container to another container or between different folders within the same container" taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val source_container = AppConf.getConfig("oci_storage_container")
@@ -156,7 +156,7 @@ class TestOCIS3StorageService extends FlatSpec with Matchers {
        s3Service.closeContext()
    }
 
-   it should "Test for oci s3 storage - Remote extract a archived file on cloud storage to a given folder within the same container" in {
+   it should "Test for oci s3 storage - Remote extract a archived file on cloud storage to a given folder within the same container"  taggedAs(oci) in {
 
        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
        val storageContainer = AppConf.getConfig("oci_storage_container")
