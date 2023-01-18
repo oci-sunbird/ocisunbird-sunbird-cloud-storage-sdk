@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.sunbird</groupId>
-    <artifactId>cloud-store-sdk_2.12</artifactId>
+    <artifactId>cloud-store-sdk_2.11</artifactId>
     <version>1.4.6</version>
     <packaging>jar</packaging>
     <name>Cloud Store SDK</name>
@@ -100,7 +100,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-scala_${scala.maj.version}.0-RC1</artifactId>
+			<artifactId>jackson-module-scala_${scala.maj.version}</artifactId>
 			<version>2.7.8</version>
 		</dependency>
 		<dependency>
