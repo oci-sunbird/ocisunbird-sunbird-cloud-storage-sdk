@@ -26,7 +26,7 @@ node('build-slave') {
                     print "Environment will be : ${env.NODE_ENV}"
                     sh '/opt/apache-maven-3.6.3/bin/mvn3.6 -v'
                     sh 'echo OCI Storage Endpoint $oci_storage_endpoint'
-                    sh '/opt/apache-maven-3.6.3/bin/mvn3.6 -DtagsToInclude=oci clean package'
+                    sh '/opt/apache-maven-3.6.3/bin/mvn3.6 -DtagsToInclude=nothing clean package'
                   
                 }
 
