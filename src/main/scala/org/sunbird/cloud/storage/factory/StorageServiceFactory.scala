@@ -21,8 +21,6 @@ object StorageServiceFactory {
                 new AzureStorageService(config);
             case "cephs3"  =>
                 new CephS3StorageService(config);
-            case "oci"  =>
-                new OCIS3StorageService(config);
             case "gcloud"  =>
               new GcloudStorageService(config);
             case "oci"  =>
