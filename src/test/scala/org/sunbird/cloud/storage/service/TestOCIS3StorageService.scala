@@ -1,167 +1,67 @@
 package org.sunbird.cloud.storage.service
 
-import org.scalatest.FlatSpec
-import org.scalatest._
-import org.sunbird.cloud.storage.Model.Blob
+import org.scalatest.{FlatSpec, Matchers}
 import org.sunbird.cloud.storage.conf.AppConf
-import org.sunbird.cloud.storage.factory.{StorageConfig, StorageServiceFactory}
 import org.sunbird.cloud.storage.exception.StorageServiceException
-import java.nio.file.{Files, Paths}
-class TestOCIS3StorageService extends FlatSpec with Matchers {
-object oci extends Tag("oci")
-    it should "Test for oci s3 storage - Upload a folder to cloud" taggedAs(oci) in {
+import org.sunbird.cloud.storage.factory.{StorageConfig, StorageServiceFactory}
 
-        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"),AppConf.getStorageEndpoint("oci"),AppConf.getRegion("oci")))
-        val storageContainer = AppConf.getConfig("oci_storage_container")
-        val uploaded_obj = s3Service.upload(storageContainer, "src/test/resources/1234", "resources/", Option(true),Option(1), Option(2), None)
-        assert(uploaded_obj.contains("https://"))
-        s3Service.closeContext()
-    }
+class TestOCIS3StorageService  extends FlatSpec with Matchers {
 
-    it should "Test for oci s3 storage - Upload a file to cloud" taggedAs(oci) in {
+  it should "test for OCIS3 storage" in {
 
-        val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"),AppConf.getStorageEndpoint("oci"),AppConf.getRegion("oci")))
-        val storageContainer = AppConf.getConfig("oci_storage_container")
-        val uploaded_obj = s3Service.upload(storageContainer, "src/test/resources/test-data.log", "testUpload/1.log", Option(false),Option(1), Option(2), None)
-        assert(uploaded_obj.contains("https://"))
-        s3Service.closeContext()
-    }
+    val storageConfig = StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getEndPoint("oci"), AppConf.getRegion("oci"))
+    val ociS3Service = StorageServiceFactory.getStorageService(storageConfig)
 
-   it should "Test for oci s3 storage - List objects from cloud storage for a given prefix"  taggedAs(oci) in {
+    val storageContainer = AppConf.getConfig("oci_storage_container")
 
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val list_objs = s3Service.listObjects(storageContainer, "testUpload/" ,Option(true))
-       assert(list_objs.isInstanceOf[List[Blob]] || list_objs.isEmpty)
-       s3Service.closeContext()
-   }
+    // Use this exception block to execute the test cases successfully when it has invalid configuration.
+    val caught =
+        intercept[StorageServiceException]{
+          ociS3Service.upload(storageContainer, "src/test/resources/1234/test-blob.log", "testUpload/1234/", Option(false),Option(5), Option(2), None)
+        }
+    assert(caught.getMessage.contains("Failed to upload."))
 
-   it should "Test for oci s3 storage - List object keys from cloud storage for a given prefix" taggedAs(oci) in {
+    /**
+     * Use the below complete block when we have the valid configuration and
+     * to test the OCI functionality.
+     */
+    /**
+    ociS3Service.upload(storageContainer, "src/test/resources/test-data.log", "testUpload/test-blob.log")
+    ociS3Service.download(storageContainer, "testUpload/test-blob.log", "src/test/resources/test-s3/")
 
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val list_objs_keys = s3Service.listObjectKeys(storageContainer, "testUpload/")
-       assert(list_objs_keys.isInstanceOf[List[String]] || list_objs_keys.isEmpty)
-       s3Service.closeContext()
-   }
+    // upload directory
+    println("url of folder", ociS3Service.upload(storageContainer, "src/test/resources/1234/", "testUpload/1234/", Option(true)))
 
+    // downlaod directory
+    ociS3Service.download(storageContainer, "testUpload/1234/", "src/test/resources/test-s3/", Option(true))
 
-   it should "Test for oci s3 storage - Get the blob object details" taggedAs(oci) in {
+    println("OCI S3 signed url", ociS3Service.getSignedURL(storageContainer, "testUpload/test-blob.log", Option(600)))
 
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val oss_object = s3Service.getObject(storageContainer, "testUpload/1.log",Option(true))
-       assert(oss_object.isInstanceOf[Blob])
-       s3Service.closeContext()
-   }
+    val blob = ociS3Service.getObject(storageContainer, "testUpload/test-blob.log")
+    println("blob details: ", blob)
 
-   it should "Test for oci s3 storage - Search for objects for a given prefix" taggedAs(oci) in {
+    println("upload public url", ociS3Service.upload(storageContainer, "src/test/resources/test-data.log", "testUpload/test-data-public.log", Option(true)))
+    println("upload public with expiry url", ociS3Service.upload(storageContainer, "src/test/resources/test-data.log", "testUpload/test-data-with-expiry.log", Option(false)))
+    println("signed path to upload from external client", ociS3Service.getSignedURL(storageContainer, "testUpload/test-data-public1.log", Option(600), Option("w")))
 
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val list_objs = s3Service.searchObjects(storageContainer, "testUpload/")
-       assert(list_objs.isInstanceOf[List[Blob]] || list_objs.isEmpty)
-       s3Service.closeContext()
-   }
+    val keys = ociS3Service.searchObjectkeys(storageContainer, "testUpload/1234/")
+    keys.foreach(f => println(f))
+    val blobs = ociS3Service.searchObjects(storageContainer, "testUpload/1234/")
+    blobs.foreach(f => println(f))
 
-   it should "Test for oci s3 storage - Search for objects keys for a given prefix and return only keys" taggedAs(oci) in {
+    val objData = ociS3Service.getObjectData(storageContainer, "testUpload/test-blob.log")
+    objData.length should be(18)
 
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val list_objs_keys = s3Service.searchObjectkeys(storageContainer, "testUpload/")
-       assert(list_objs_keys.isInstanceOf[List[String]] || list_objs_keys.isEmpty)
-       s3Service.closeContext()
-   }   
+    // delete directory
+    ociS3Service.deleteObject(storageContainer, "testUpload/1234/", Option(true))
+    ociS3Service.deleteObject(storageContainer, "testUpload/test-blob.log")
 
-   it should "Test for oci s3 storage - Get HDFS compatible file paths to be used in tech stack like Spark" taggedAs(oci) in {
+    ociS3Service.upload(storageContainer, "src/test/resources/test-extract.zip", "testUpload/test-extract.zip")
+    ociS3Service.copyObjects(storageContainer, "testUpload/test-extract.zip", storageContainer, "testDuplicate/test-extract.zip")
 
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val list_objs = s3Service.listObjects(storageContainer, "testUpload/" ,Option(true))
-       val hdfs_paths = s3Service.getPaths(storageContainer, list_objs)
-       assert(hdfs_paths.isInstanceOf[List[String]] || hdfs_paths.isEmpty)
-       s3Service.closeContext()
-   }  
+    ociS3Service.extractArchive(storageContainer, "testUpload/test-extract.zip", "testUpload/test-extract/")
+    */
+    ociS3Service.closeContext()
+  }
 
-   it should "Test for oci s3 storage - Get the blob object data" taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val obj_data = s3Service.getObjectData(storageContainer, "testUpload/1.log")
-       assert(obj_data.isInstanceOf[Array[String]] || obj_data.isEmpty)
-       s3Service.closeContext()
-   }  
-
-   it should "Test for oci s3 storage - Get the URI of the given prefix" taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val obj_uri = s3Service.getUri(storageContainer, "testUpload/")
-       assert(obj_uri.isInstanceOf[String])
-       s3Service.closeContext()
-   } 
-
-
-   it should "Test for oci s3 storage - Put a blob in the cloud with the given content data"  taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val content_array = Files.readAllBytes(Paths.get("src/test/resources/test-data.log"))
-       val obj_put_str = s3Service.put(storageContainer, content_array,"testUpload/2.log")
-       assert(obj_put_str.isInstanceOf[String])
-       s3Service.closeContext()
-   } 
-
-   it should "Test for oci s3 storage - Get pre-signed URL to access an object in the cloud store." taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val pre_signed_url = s3Service.getSignedURL(storageContainer, "testUpload/2.log")
-       assert(pre_signed_url.isInstanceOf[String])
-       s3Service.closeContext()
-   }
-
-   it should "Test for oci s3 storage - Get pre-signed URL V2 to access an object in the cloud store" taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       val pre_signed_url_v2 = s3Service.getSignedURLV2(storageContainer, "testUpload/2.log",Option(3600),Option("r"),Option("text/x-log"))
-       assert(pre_signed_url_v2.isInstanceOf[String])
-       s3Service.closeContext()
-   }
-
-   it should "Test for oci s3 storage - Download file/folder from cloud storage" taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       s3Service.download(storageContainer, "testUpload/1.log","/tmp/oci_sb_cloustorage/",Option(false))
-       assert(Files.exists(Paths.get("/tmp/oci_sb_cloustorage/1.log")))
-       s3Service.closeContext()
-   }
-
-   it should "Test for oci s3 storage - Delete an object from the cloud store" taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       s3Service.deleteObject(storageContainer, "testUpload/1.log")
-       s3Service.closeContext()
-   }
-
-   it should "Test for oci s3 storage - Copy objects from one container to another container or between different folders within the same container" taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val source_container = AppConf.getConfig("oci_storage_container")
-       val target_container = AppConf.getConfig("oci_storage_container_target")
-       s3Service.copyObjects(source_container, "resources/", target_container,"resources/",Option(true))
-       s3Service.closeContext()
-   }
-
-   it should "Test for oci s3 storage - Remote extract a archived file on cloud storage to a given folder within the same container" taggedAs(oci) in {
-
-       val s3Service = StorageServiceFactory.getStorageService(StorageConfig("oci", AppConf.getStorageKey("oci"), AppConf.getStorageSecret("oci"), AppConf.getStorageEndpoint("oci"), AppConf.getRegion("oci")))
-       val storageContainer = AppConf.getConfig("oci_storage_container")
-       s3Service.extractArchive(storageContainer, "test-dir.zip","/extract-archive")
-       s3Service.closeContext()
-   }
-   
 }

@@ -70,14 +70,15 @@ object AppConf {
         else "";
     }
 
-    def getStorageEndpoint(`type`: String): Option[String] = {
-        if (`type`.equals("oci")) getConfigList("oci_storage_endpoint");
+    def getRegion(`type`: String): Option[String] = {
+        if (`type`.equals("oci"))
+            Option(getConfig("oci_region"))
         else Option("");
     }
 
-    def getRegion(`type`: String): String = {
-        if (`type`.equals("oci")) getConfig("oci_region");
-        else "";
+    def getEndPoint(`type`: String): Option[String] = {
+        if (`type`.equals("oci"))
+            Option(getConfig("oci_storage_endpoint"))
+        else None
     }
-
 }
